@@ -1,0 +1,9 @@
+{% extends "old/base.html" %}
+{% block title %}{{ job.description }}{% endblock %}
+{% block content %}
+  <h1>{{ job.description }}</h1>
+  <p class="date">
+    Opened {{ job.open }} for {{ job.client }}
+  </p>
+  {{ job.notes|linebreaks }}
+{% endblock %}

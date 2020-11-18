@@ -1,0 +1,122 @@
+idx,job,new_job_id,element,factor,label,value,note_element,note_factor,parent,order,group
+1,45,57,1,1,Site,Parrramatta Square,,,,1,1
+2,45,57,2,2,Test Square,BR16,,,1.0,2,1
+3,45,57,3,2,Test Square,AX36,,,1.0,2,1
+4,45,57,4,2,Test Square,AO31,,,1.0,2,1
+5,45,57,5,2,Test Square,BC33,,,1.0,2,1
+6,45,57,6,2,Test Square,BW21,,,1.0,2,1
+7,48,60,71,19,Trench,A,,,,1,2
+8,48,60,72,19,Trench,B,,,,1,2
+9,64,61,111,33,Site,Cattai Road,,,,1,3
+10,64,61,112,34,TP,2,,,111.0,2,3
+11,49,62,26,7,Site,Cumberland Hospital,,,,1,4
+12,49,62,109,31,Site,Thought this was Jillians PNUT sand profile but it appears not; origin unknown,,Dont know what this job is for,,1,4
+13,49,62,27,8,TrenchSquare,H13-6E-21,,,26.0,2,4
+14,49,62,28,8,TrenchSquare,F12-10E,,,26.0,2,4
+15,49,62,29,8,TrenchSquare,C11-6B,,,26.0,2,4
+16,49,62,30,8,TrenchSquare,unknown,Immediately adjacent and to the north of 29,,26.0,2,4
+17,49,62,31,8,TrenchSquare,D10-2E-23,,,26.0,2,4
+18,49,62,32,8,TrenchSquare,C9-6H-15,,,26.0,2,4
+19,49,62,33,8,TrenchSquare,B14-10D,Deep Parramatta Sand profile,,26.0,2,4
+20,49,62,110,32,Square,Thought this was Jillians PNUT sand profile but it appears not; origin unknown,,Dont know what this job is for,109.0,2,4
+21,51,64,34,9,Site,Macarthur Memorial Park (Varroville),,,,1,5
+22,51,64,35,10,Testing Area,1,,,34.0,2,5
+23,51,64,37,10,Testing Area,3,,,34.0,2,5
+24,51,64,39,10,Testing Area,10,,,34.0,2,5
+25,51,64,41,10,Testing Area,4,,,34.0,2,5
+26,51,64,43,10,Testing Area,5,,,34.0,2,5
+27,51,64,45,10,Testing Area,2,,,34.0,2,5
+28,51,64,47,10,Testing Area,12,,,34.0,2,5
+29,51,64,49,10,Testing Area,11,,,34.0,2,5
+30,51,64,51,10,Testing Area,8,,,34.0,2,5
+31,51,64,53,10,Testing Area,9,,,34.0,2,5
+32,51,64,55,10,Testing Area,6,,,34.0,2,5
+33,51,64,57,10,Testing Area,5,,,34.0,2,5
+34,51,64,59,10,Testing Area,7,,,34.0,2,5
+35,51,64,36,11,Test Pit,X1000 Y1030,,,35.0,3,5
+36,51,64,38,11,Test Pit,X3020 Y3000,,,37.0,3,5
+37,51,64,40,11,Test Pit,X10040 Y10000,,,39.0,3,5
+38,51,64,42,11,Test Pit,X4020 Y4030,,,41.0,3,5
+39,51,64,44,11,Test Pit,X5000 Y5040,,,43.0,3,5
+40,51,64,46,11,Test Pit,X2000 Y2000,,,45.0,3,5
+41,51,64,48,11,Test Pit,X12010 Y12020,,,47.0,3,5
+42,51,64,50,11,Test Pit,X11010 Y11000,,,49.0,3,5
+43,51,64,52,11,Test Pit,X8000 Y8000,,,51.0,3,5
+44,51,64,54,11,Test Pit,X9000 Y9030,,,53.0,3,5
+45,51,64,56,11,Test Pit,X6020 Y6040,,,55.0,3,5
+46,51,64,58,11,Test Pit,X5010 Y5020,,,57.0,3,5
+47,51,64,60,11,Test Pit,X7??? Y7???,,,59.0,3,5
+48,51,64,65,11,Test Pit,X8??? Y8???,,,51.0,3,5
+49,66,67,61,12,Project,Moorebank Intermodal Terminal Salvage,,,,1,6
+50,66,67,62,13,Site,MISI7,,,61.0,2,6
+51,66,67,63,14,SQ,M5,,Square,62.0,3,6
+52,66,67,64,14,SQ,G8,,Square,62.0,3,6
+53,62,69,7,3,Project,Scone to Murrurundi Pipeline Project,,,,1,7
+54,62,69,8,5,Area,PAD1,,,7.0,2,7
+55,62,69,9,5,Area,PAD2,,,7.0,2,7
+56,62,69,10,5,Area,PAD3,,,7.0,2,7
+57,62,69,11,5,Area,PAD4,,,7.0,2,7
+58,62,69,12,5,Area,PAD5,,,7.0,2,7
+59,62,69,13,5,Area,PAD6,,,7.0,2,7
+60,62,69,14,5,Area,PAD7,,,7.0,2,7
+61,62,69,15,5,Area,PAD8,,,7.0,2,7
+62,62,69,16,5,Area,PAD9,,,7.0,2,7
+63,62,69,17,5,Area,PAD10,,,7.0,2,7
+64,62,69,18,5,Area,PAD11,,,7.0,2,7
+65,62,69,19,5,Area,PAD12,,,7.0,2,7
+66,62,69,20,5,Area,PAD13,,,7.0,2,7
+67,62,69,21,5,Area,PAD14,,,7.0,2,7
+68,62,69,22,5,Area,PAD15,,,7.0,2,7
+69,62,69,23,5,Area,PAD16,,,7.0,2,7
+70,62,69,24,5,Area,PAD17,,,7.0,2,7
+71,62,69,25,6,Test Pit,Test Pit 167,The parent PAD has been guessed and needs checking,,24.0,3,7
+72,93,70,99,25,Site,"2-10 Phillip Street, Parramatta",,,,1,8
+73,93,70,100,26,Pit,7,,,99.0,2,8
+74,61,71,105,28,Site,Southbank,,,,1,9
+75,61,71,104,27,Trench,17,,,105.0,2,9
+76,112,75,122,42,Excavation Stage,Salvage,,,,1,10
+77,112,75,123,43,Pit,14,,,,1,10
+78,83,76,67,16,Site,Parramatta Park Gardens Gatehouse,,,,1,11
+79,83,76,68,17,Trench,1,,,67.0,2,11
+80,83,76,69,18,Particle-size replicate profile,B,,,68.0,3,11
+81,83,76,70,18,Particle-size replicate profile,A,,,68.0,3,11
+82,60,78,107,29,Site,OSPS17,,,,1,12
+83,60,78,108,30,Trench,Y1,,,107.0,2,12
+84,91,81,75,22,Project,M12 Project,,,,1,13
+85,91,81,76,23,Site,BCE,,,75.0,2,13
+86,91,81,81,23,Site,CHRP,,,75.0,2,13
+87,91,81,84,23,Site,KCW,,,75.0,2,13
+88,91,81,86,23,Site,KNW,,,75.0,2,13
+89,91,81,88,23,Site,PCP8,,,75.0,2,13
+90,91,81,90,23,Site,RRD,,,75.0,2,13
+91,91,81,92,23,Site,SCE,,,75.0,2,13
+92,91,81,94,23,Site,SCW,,,75.0,2,13
+93,91,81,77,24,Test Pit,460E,,,76.0,3,13
+94,91,81,78,24,Test Pit,540E,,,76.0,3,13
+95,91,81,79,24,Test Pit,580E,,,76.0,3,13
+96,91,81,80,24,Test Pit,660E,,,76.0,3,13
+97,91,81,82,24,Test Pit,100E100N,,,81.0,3,13
+98,91,81,83,24,Test Pit,100E200N,,,81.0,3,13
+99,91,81,85,24,Test Pit,340E260N,,,84.0,3,13
+100,91,81,87,24,Test Pit,DB300N,,,86.0,3,13
+101,91,81,89,24,Test Pit,200N,,,88.0,3,13
+102,91,81,91,24,Test Pit,100E140N,,,90.0,3,13
+103,91,81,93,24,Test Pit,220E,,,92.0,3,13
+104,91,81,95,24,Test Pit,120N,,,94.0,3,13
+105,91,81,96,24,Test Pit,160N,,,94.0,3,13
+106,91,81,97,24,Test Pit,580E,,,94.0,3,13
+107,91,81,98,24,Test Pit,660E,,,94.0,3,13
+108,67,84,124,44,Site,Kangy Angy,,,,1,14
+109,67,84,125,45,Square,O,,,124.0,2,14
+110,67,84,126,45,Square,I,,,124.0,2,14
+111,67,84,127,45,Square,H,,,124.0,2,14
+112,67,84,128,46,Open Area,2,,,124.0,2,14
+113,68,85,113,35,Site,Waterloo Station,,,,1,15
+114,68,85,114,36,Square,Reference,,,113.0,2,15
+115,68,85,115,36,Square,19,,,113.0,2,15
+116,88,91,73,20,Site,"Toga Apartment Development, Penrith",,,,1,16
+117,88,91,74,21,Trench,1,,,73.0,2,16
+118,119,103,116,37,Transect,1,,,,1,17
+119,119,103,117,38,Pit,2,,,116.0,2,17
+120,145,128,118,39,Profile,1,,,,1,18
+121,145,128,119,39,Profile,2,,,,1,18

@@ -1,0 +1,25 @@
+{% extends "dashboard/base.html" %}
+
+{% block content%}
+
+  <form method="POST">
+    {% csrf_token %}
+    {% with j=job_form.data %}
+    {% with t=title_form.data %}
+    {% with s=status_form.data %}
+  
+    <h2>Job {{ j.id }}</h2>
+    <h3>{{ t.title }}</h3>
+
+    <table>
+    {{ job_form.as_table }}
+    {{ title_form }}
+    {{ status_form }}
+    </table>
+    <input type="submit" value="Submit">
+    {% endwith %}
+    {% endwith %}
+    {% endwith %}
+  </form>
+
+{% endblock %}

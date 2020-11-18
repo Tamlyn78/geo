@@ -1,0 +1,16 @@
+{% extends "old/base.html" %}
+{% block title %}Jobs{% endblock %}
+{% block content %}
+  <h1>Jobs</h1>
+  {% for job in jobs %}
+    <h2>
+      <a href="{{ job.get_absolute_url }}">
+        {{ job.id }} {{ job.description }} {{ job.location }}
+      </a>
+    </h2>
+    <p class="date">
+      Opened {{ job.open }} for {{ job.client }}
+    </p>
+    {{ job.notes|truncatewords:30|linebreaks }}
+  {% endfor %}
+{% endblock %}
