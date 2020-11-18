@@ -110,6 +110,47 @@ class MetaData:
         return(d)
 
 
+class RADBak(MetaData):
+    """From MALA RD3 header data, create an object with custom metadata of a GPR segment."""
+
+    def __init__(self, path, meta=None):
+        """Read a RAD FILE and set attributes using the file content."""
+        self.rad_path = self._get_rad_path(path)
+        self._rad_to_metadata(path)
+
+    def _get_rad_path(self, path):
+        """Return the path to the RAD file."""
+        p = get_file_path(path, ext='.rad')
+        return(p)
+
+    def _rad_to_metadata(self, path):
+        """Set attributes using the dictionary of proprietary metadata."""
+        d = self._rad_to_dict()
+        m = self.metadata
+        m.brand = 'MALA'
+        m.traces =d['LAST TRACE']
+        m.samples = d['SAMPLES']
+        m.step = d['DISTANCE INTERVAL']
+        m.frequency = d['FREQUENCY']
+        m.start_position = d['START POSITION']
+        m.system_calibration = d['SYSTEM CALIBRATION']
+
+        m.x.values = self._get_trace_x()
+        m.x.precision = 4
+        m.y.values = self._get_trace_y()
+        m.y.precision = 7
+
+    def _rad_to_dict(self):
+        """Convert header information to a dictionary of raw proprietary information."""
+        d = rad2dict(self.rad_path)
+        return(d)
+
+    def write_rad(self):
+        """"""
+        d = self._rad_to_dict()
+        print(d)
+
+
 class RAD(MetaData):
     """From MALA RD3 header data, create an object with custom metadata of a GPR segment."""
 
@@ -158,7 +199,7 @@ class RD3(RAD):
     def __init__(self, path, rad_path=None):
         self.basepath = path
         rad_path = rad_path if rad_path else path
-        RAD.__init__(self, rad_path)
+        #RAD.__init__(self, rad_path)
         self.rd3_path = self._rd3_path(path)
         self.array = self._rd3_to_array()
         self._update_trace_number()

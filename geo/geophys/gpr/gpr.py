@@ -51,6 +51,7 @@ from matplotlib import cm
 
 from ...gis.raster import RectifyTif
 from .mala import RD3
+from .metadata import MetaData
 #from .calculations import *
 from .filesystem import list_gpr_data, get_folder_and_filename
 
@@ -118,7 +119,7 @@ def line_to_ascii1(line, path):
                 f.write(wee)
                 
 
-class MetaData:
+class MetaDataBak:
     """A parent class to create a csv for metadata logging and loading. The attributes of the metadata are defined by the child class.
         Attributes:
             path <str>: A filesystem path to the required csv location;
@@ -197,23 +198,33 @@ class GroupData(MetaData):
         return(columns)
 
 
-class Segments(MetaData):
+class Segments:
     """Load GPR data contained in a given folder. Create a CSV file within the given folder listing the subdirectory and filename of the GPR data."""
 
-    def __init__(self, data_directory, filename='segment_files.csv', extension='rd3', columns=[]):
+    def __init__(self, rdir, filename='segment_files.csv', extension='rd3', columns=[]):
         """Attributes:
             data_directory <str>: A filesystem path to a folder containing GPR data. The data should be kept in subfolders of the path.)"""
 
-        self.data_directory = data_directory
-        self.filename = filename
-        self.extension = extension
+        #self.rdir = rdir
+        #self.filename = filename
+        #self.extension = extension
 
-        csv = self.segment_files_csv = self._outfile()
-        cols = self._columns(columns)
+        #csv = self.segment_files_csv = self._outfile()
+        path = join(rdir, filename)
+        cols = columns if columns else self._columns()
 
-        MetaData.__init__(self, csv, cols)
+        m = MetaData(path, cols)
+        print(dir(m))
+        #print(self.metadata.to_df)
+        exit()
+
+        #MetaData.__init__(self, path, cols)
         if self.metadata.empty:
-            lst = self._listdir()
+            paths = list_gpr_data(rdir, extension)
+            meta = [get_folder_and_filename(i) for i in enumerate(paths, start=1)]
+            #lst = self._listdir(rdir, extension)
+            print(meta)
+            exit()
             lst = [i + [''] for i in lst]
             self.prepopulate_csv(lst)
 
@@ -221,29 +232,21 @@ class Segments(MetaData):
         m = self.metadata
         self.segments = [self._segment(i, fmt) for n, i in m.iterrows()]
 
-    def _outfile(self):
-        d = self.data_directory
-        f = self.filename
-        o = join(d, f)
-        return(o)
 
-    def _columns(self, columns):
+    def _columns(self):
         """Return a list of column names."""
-        column_names = [
+        names = [
             'id',
             'folder',
             'filename',
             'dat_note'
         ]
-        columns = columns if columns else column_names
-        return(columns)
+        return(names)
 
-    def _listdir(self):
+    def _listdir(self, rdir, ext):
         """"""
-        d = self.data_directory
-        e = self.extension
-        lst = list_gpr_data(d, e)
-        meta = [get_folder_and_filename(i) for i in lst]
+        lst = list_gpr_data(rdir, ext)
+        meta = pd.DataFrame([get_folder_and_filename(i) for i in lst], columns=['wee','poo'])
         return(meta)    
 
     def _segment(self, metadata, fmt):
