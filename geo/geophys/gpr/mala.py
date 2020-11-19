@@ -4,6 +4,7 @@
 #from os.path import splitext
 from numpy import fromstring
 import numpy as np
+from collections import namedtuple
 
 from .filesystem import get_file_path
 from .calculations import distance, time
@@ -63,174 +64,76 @@ def rd32arr(path, samples):
 
 def arr2rd3(array, path):
     """"""
-    import numpy as np
     a = np.concatenate([i for i in array.T])
     with open(path, 'wb') as f:
         for i in a:
             f.write(i)
 
-class MetaData:
-    """A metadata class creating attributes of a GPR segment."""
-    class metadata:
-        brand = None
-        traces = None
-        samples = None
-        step = None
 
-        class x:
-            values = None
-            precision = None
+class RAD:
+    """From MALA RD3 header data, create an object with custom metadata of a GPR segment."""
 
-        class y:
-            values = None
-            precision = None
+    def __init__(self, path):
+        """Read a RAD FILE and set attributes using the file content."""
+        p = get_file_path(path, ext='.rad')
+        d = rad2dict(p)
 
-    def _get_trace_x(self):
+        s = self
+        s.format = 'MALA'
+        s.traces = d['LAST TRACE']
+        s.samples = d['SAMPLES']
+        s.step = d['DISTANCE INTERVAL']
+        s.frequency = d['FREQUENCY']
+        s.start_position = d['START POSITION']
+        s.system_calibration = d['SYSTEM CALIBRATION']
+
+        values = self._x_values()
+        precision = 4
+        X = namedtuple('x', ['values', 'precision'])
+        s.x = X(values, precision)
+
+        values = self._y_values()
+        precision = 7
+        Y = namedtuple('y', ['values', 'precision'])
+        s.y = Y(values, precision)
+
+        s.rad_path = p
+
+    def _x_values(self):
         """Calculate the trace x coordinates from the metadata."""
-        m = self.metadata
-        x = distance(m.step, m.traces)
+        x = distance(self.step, self.traces)
         return(x)
 
-    def _get_trace_y(self):
+    def _y_values(self):
         """Calculate the trace y coordinates from the metadata."""
-        m = self.metadata
-        y = time(m.frequency, m.samples, precision=5)
+        y = time(self.frequency, self.samples, precision=5)
         return(y)
-
-    def metadata_to_dict(self, dic=None):
-        """"""
-        m = self.metadata
-        d = dict([(i, getattr(m, i)) for i in dir(m) if not i.startswith('_')])
-        if dic:
-            d = {**d, **dic}
-        d['x_precision'] = d['x'].precision
-        d['y_precision'] = d['y'].precision
-        d.pop('x', None)
-        d.pop('y', None)
-        return(d)
-
-
-class RADBak(MetaData):
-    """From MALA RD3 header data, create an object with custom metadata of a GPR segment."""
-
-    def __init__(self, path, meta=None):
-        """Read a RAD FILE and set attributes using the file content."""
-        self.rad_path = self._get_rad_path(path)
-        self._rad_to_metadata(path)
-
-    def _get_rad_path(self, path):
-        """Return the path to the RAD file."""
-        p = get_file_path(path, ext='.rad')
-        return(p)
-
-    def _rad_to_metadata(self, path):
-        """Set attributes using the dictionary of proprietary metadata."""
-        d = self._rad_to_dict()
-        m = self.metadata
-        m.brand = 'MALA'
-        m.traces =d['LAST TRACE']
-        m.samples = d['SAMPLES']
-        m.step = d['DISTANCE INTERVAL']
-        m.frequency = d['FREQUENCY']
-        m.start_position = d['START POSITION']
-        m.system_calibration = d['SYSTEM CALIBRATION']
-
-        m.x.values = self._get_trace_x()
-        m.x.precision = 4
-        m.y.values = self._get_trace_y()
-        m.y.precision = 7
-
-    def _rad_to_dict(self):
-        """Convert header information to a dictionary of raw proprietary information."""
-        d = rad2dict(self.rad_path)
-        return(d)
-
-    def write_rad(self):
-        """"""
-        d = self._rad_to_dict()
-        print(d)
-
-
-class RAD(MetaData):
-    """From MALA RD3 header data, create an object with custom metadata of a GPR segment."""
-
-    def __init__(self, path, meta=None):
-        """Read a RAD FILE and set attributes using the file content."""
-        self.rad_path = self._get_rad_path(path)
-        self._rad_to_metadata(path)
-
-    def _get_rad_path(self, path):
-        """Return the path to the RAD file."""
-        p = get_file_path(path, ext='.rad')
-        return(p)
-
-    def _rad_to_metadata(self, path):
-        """Set attributes using the dictionary of proprietary metadata."""
-        d = self._rad_to_dict()
-        m = self.metadata
-        m.brand = 'MALA'
-        m.traces =d['LAST TRACE']
-        m.samples = d['SAMPLES']
-        m.step = d['DISTANCE INTERVAL']
-        m.frequency = d['FREQUENCY']
-        m.start_position = d['START POSITION']
-        m.system_calibration = d['SYSTEM CALIBRATION']
-
-        m.x.values = self._get_trace_x()
-        m.x.precision = 4
-        m.y.values = self._get_trace_y()
-        m.y.precision = 7
-
-    def _rad_to_dict(self):
-        """Convert header information to a dictionary of raw proprietary information."""
-        d = rad2dict(self.rad_path)
-        return(d)
-
-    def write_rad(self):
-        """"""
-        d = self._rad_to_dict()
-        print(d)
-
 
 
 class RD3(RAD):
     """Create a MALA object for use in general GPR methods. Note that slight variations in frequency between lines require rounding of the time interval to force equality of time-values between adjacent lines. Reading of separate files should be independent of one another so that the class does not fail if one is missing, or if an isolated file needs to be inspected."""
 
+    ext = 'rd3'
+
     def __init__(self, path, rad_path=None):
-        self.basepath = path
         rad_path = rad_path if rad_path else path
-        #RAD.__init__(self, rad_path)
-        self.rd3_path = self._rd3_path(path)
-        self.array = self._rd3_to_array()
-        self._update_trace_number()
-
-    def _rd3_path(self, path):
-        """Return the path to the RAD file."""
+        RAD.__init__(self, rad_path)
         p = get_file_path(path, ext='.rd3')
-        return(p)
+        self.array = rd32arr(p, self.samples)
+        self._update_traces()
+        self.rd3_path = p
 
-    def _rd3_to_array(self):
-        """Read RD3 file into a numpy array."""
-        m = self.metadata
-        a = rd32arr(self.rd3_path, m.samples)
-        return(a)
-
-    def _update_trace_number(self):
+    def _update_traces(self):
         """The trace number recorded in some DAT files has been found to occasionally be in error. The returned array is used here to update the metadata"""
-        self.metadata.traces = self.array.shape[1]
+        self.traces = self.array.shape[1]
 
-    def arr2rd3(array, path):
-        """Write an array """
-        arr2rd3(array, path)
-
-    def write(self, path):
+    def write_array(self, path):
         """Write rd3 to file"""
-        b, e = splitext(path)
-        arr2rd3(b + '.rd3', self.traces, self.samples)
+        #b, e = splitext(path)
+        #arr2rd3(b + '.rd3', self.traces, self.samples)
 
 
-
-class Line(MetaData, RadarGram):
+class Line(RadarGram):
     """A line object"""
     def __init__(self, m, n):
         """"""

@@ -119,168 +119,86 @@ def line_to_ascii1(line, path):
                 f.write(wee)
                 
 
-class MetaDataBak:
-    """A parent class to create a csv for metadata logging and loading. The attributes of the metadata are defined by the child class.
-        Attributes:
-            path <str>: A filesystem path to the required csv location;
-            cols <list>: A list of strings representing the header columns of 
-                the csv.
-    """
-    def __init__(self, path, cols):
-        """Create a csv if not exists and load a dataframe"""
-        self.path, self.cols = path, cols
-        self._to_csv()
-        self.metadata = self._to_df()
-
-    def _to_csv(self):
-        """Create a CSV in the specified path."""
-        try:
-            with open(self.path, 'x', newline='') as f:
-                w = csv.writer(f, quoting=csv.QUOTE_ALL)
-                w.writerow([i for i in self.cols])
-        except Exception as e:
-            print(e)
-
-    def _to_df(self):
-        """Return a pandas dataframe. Improvements might include specification of data type."""
-        df = pd.read_csv(self.path)
-        return(df)
-
-    def metadata_is_empty(self):
-        """Return True if the CSV has no data."""
-        m = self.metadata
-        return(m.empty)
-        
-    def prepopulate_csv(self, list_of_tuples):
-        """Append data to the CSV.
-            Attributes:
-                list_of_data <list of tuples>: A list of tuples containing the field data for each line."""
-        with open(self.path, 'a', newline='') as f:
-            w = csv.writer(f, quoting=csv.QUOTE_ALL)
-            for n, i in enumerate(list_of_tuples, start=1):
-                w.writerow([n] + [j for j in i])
+def get_format(extension):
+    """Return an associated object for a given GPR file extension."""
+    e = extension
+    if e.lower()=='rd3':
+        return(RD3)
 
 
-class GroupData(MetaData):
-    """Group GPR data for further processing. Loaded data can be passed through as many times as necessary for where multiple groups are necessary."""
-    def __init__(self, dat, filename='groups.csv', columns=[]):
-        self.data_directory = dat.data_directory
-        self.filename = filename
-
-        self.groups_csv = self._outfile()
-
-        MetaData.__init__(self, self.groups_csv, self._columns(columns))
-
-        if self.metadata_is_empty():
-            print('WARNING: No group data exists.')
-
-        try:
-            self.metadata = pd.concat([dat.metadata, self.metadata.drop('id', axis=1)], axis=1)
-        except Exception as e:
-            print(e)
-
-        self.segments = dat.segments
-
-    def _outfile(self):
-        d = self.data_directory
-        f = self.filename
-        o = join(d, f)
-        return(o)
-
-    def _columns(self, columns):
-        """Return a list of column names."""
-        column_names = [
-            'id',
-            'group',
-            'group_note'
-        ]
-        columns = columns if columns else column_names
-        return(columns)
-
-
-class Segments:
-    """Load GPR data contained in a given folder. Create a CSV file within the given folder listing the subdirectory and filename of the GPR data."""
-
-    def __init__(self, rdir, filename='segment_files.csv', extension='rd3', columns=[]):
-        """Attributes:
-            data_directory <str>: A filesystem path to a folder containing GPR data. The data should be kept in subfolders of the path.)"""
-
-        #self.rdir = rdir
-        #self.filename = filename
-        #self.extension = extension
-
-        #csv = self.segment_files_csv = self._outfile()
-        path = join(rdir, filename)
-        cols = columns if columns else self._columns()
-
-        m = MetaData(path, cols)
-        print(dir(m))
-        #print(self.metadata.to_df)
-        exit()
-
-        #MetaData.__init__(self, path, cols)
-        if self.metadata.empty:
-            paths = list_gpr_data(rdir, extension)
-            meta = [get_folder_and_filename(i) for i in enumerate(paths, start=1)]
-            #lst = self._listdir(rdir, extension)
-            print(meta)
-            exit()
-            lst = [i + [''] for i in lst]
-            self.prepopulate_csv(lst)
-
-        fmt = self._get_format(extension)
-        m = self.metadata
-        self.segments = [self._segment(i, fmt) for n, i in m.iterrows()]
-
-
-    def _columns(self):
-        """Return a list of column names."""
-        names = [
-            'id',
-            'folder',
-            'filename',
-            'dat_note'
-        ]
-        return(names)
-
-    def _listdir(self, rdir, ext):
+class Files(MetaData):
+    """"""
+    def __init__(self, rdir, extension='rd3', name='files'):
         """"""
-        lst = list_gpr_data(rdir, ext)
-        meta = pd.DataFrame([get_folder_and_filename(i) for i in lst], columns=['wee','poo'])
-        return(meta)    
+        columns=['folder','filename', 'extension']
+        MetaData.__init__(self, rdir, name, columns)
+        self.if_empty(rdir, extension, columns)
+        self.rdir = rdir
 
-    def _segment(self, metadata, fmt):
-        """Return a Line object and append data from segment metadata."""
-        m = metadata
-        path = self._basepath(m)
-        seg = fmt(path)
-        seg.id = m.id
-        seg.dat_note = m.dat_note
-        return(seg)
+    def if_empty(self, rdir, ext, columns):
+        df = self.read()
+        if df.empty:
+            paths = list_gpr_data(rdir, ext)
+            lst = [get_folder_and_filename(i) + [ext] for i in paths]
+            df = pd.DataFrame([i for i in lst], columns=columns)
+            uid = pd.DataFrame([i+1 for i in df.index], columns=['id'])
+            df = pd.concat([uid, df], axis=1)
+            df['note'] = ''
+            self.write(df)
 
-    def _basepath(self, row):
-        """Return the path to a GPR line from a row of metadata."""
-        d = self.data_directory
-        fd = str(row['folder'])
-        fn = str(row['filename'])
-        path = join(d, fd, fn)
-        return(path)
 
-    def _get_format(self, ext):
+class Groups(MetaData):
+    """"""
+    def __init__(self, files, name='groups', columns=['group']):
+        f = files
+        uid = f.read()
+        MetaData.__init__(self, f.rdir, name, columns)
+        self.if_empty(uid)
+
+
+class OrthoCoords(MetaData):
+    """"""
+    def __init__(self, files, name='ortho_coords', columns=['x0', 'x1', 'y0', 'y1']):
+        f = files
+        uid = f.read()
+        MetaData.__init__(self, f.rdir, name, columns)
+        self.if_empty(uid)
+
+
+class Collection:
+    """Create an object combining all metadata relevant to an analysis for targeted selection."""
+    def __init__(self, files, *args):
+        self.f = f = files
+        lst = [f.read()]
+        for i in args:
+            lst += [i.read()]
+        self.metadata = pd.concat(lst, axis=1)
+
+    def get_segments(self):
+        r, m = self.f.rdir, self.metadata
+        s = [Segment(r, i) for n, i in m.iterrows()]
+        return(s)
+
+
+class Segment:
+    """"""
+    def __init__(self, rdir, files):
         """"""
-        if ext=='rd3':
-            return(RD3)
+        f = files
+        self.__dict__.update(f.to_dict())
 
-    def to_df(self):
-        """"""
-        s = self.segments
-        df = pd.DataFrame([{**{'id':i.id}, **i.metadata_to_dict()} for i in s])
-        return(df)
+        S = get_format(f.extension)
+        path = join(rdir, str(f.folder), str(f.filename))
+        d = S(path).__dict__
+        self.__dict__.update(d)
 
+   
+class Parallel:
+    """Align parallel segments."""
+    def __init__(self, segments):
+        s = segments
+        print(s)
 
-    def groups(self):
-        """Create categorical groups and append metadata"""
-        
 
 
 class RadarGram:
